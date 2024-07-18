@@ -21,12 +21,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
+	//振り子の構造体
 	struct Pendulum {
-		Vector3 anchor;
-		float length;
-		float angle;
-		float angularVelocity;
-		float angularAcceleration;
+		Vector3 anchor;            //アンカーポイント
+		float length;              //紐の長さ
+		float angle;               //現在の角度
+		float angularVelocity;     //角速度
+		float angularAcceleration; //角加速度
 	};
 
 	//ウィンドウサイズ
@@ -42,6 +43,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//カメラ:距離
 	Vector3 baseOffset{ 0.0f,0.0f,-6.0f };
 
+	//振り子
 	Pendulum pendulum;
 	pendulum.anchor = { 0.0f,1.0f,0.0f };
 	pendulum.length = 0.8f;
@@ -49,6 +51,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	pendulum.angularVelocity = 0.8f;
 	pendulum.angularAcceleration = 0.0f;
 
+	//球の座標
 	Vector3 point{ 0.0f,0.0f,0.0f };
 
 	//描画クラス
@@ -67,12 +70,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		//1フレームの時間
 		float deltaTime = 1.0f / 60.0f;
 
+		//振り子の角加速度の計算
 		pendulum.angularAcceleration = -(9.8f / pendulum.length) * std::sinf(pendulum.angle);
+
+		//振り子の速度の計算
 		pendulum.angularVelocity = pendulum.angularVelocity + pendulum.angularAcceleration * deltaTime;
+
+		//振り子の角度の計算
 		pendulum.angle += pendulum.angularVelocity * deltaTime;
 
+		//球の中心座標の計算
 		point.x = pendulum.anchor.x + std::sinf(pendulum.angle) * pendulum.length;
 		point.y = pendulum.anchor.y - std::cosf(pendulum.angle) * pendulum.length;
 		point.z = pendulum.anchor.z;
